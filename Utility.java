@@ -1,4 +1,4 @@
-package OrnithorynqueTeam.module.algorithm;
+package COCOMA_RoboRescue
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.LinkedList;

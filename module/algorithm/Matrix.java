@@ -1,4 +1,4 @@
-package OrnithorynqueTeam.module.algorithm;
+package COCOMA_RoboRescue.module.algorithm;
 
 import java.util.Arrays;
 import java.util.Collections;
