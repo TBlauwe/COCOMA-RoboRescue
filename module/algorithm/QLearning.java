@@ -1,6 +1,10 @@
 package COCOMA_RoboRescue.module.algorithm;
 
+import COCOMA_RoboRescue.Utility;
+
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 public class QLearning {
@@ -8,9 +12,10 @@ public class QLearning {
     //| =============================
     //| ========== MEMBERS ==========
     //| =============================
-    private Matrix Q;
-    private Matrix R;
+    private QValues Q;
 
+    private float alpha;
+    private float beta;
     private float gamma;
 
 
@@ -18,57 +23,49 @@ public class QLearning {
     //| ==========  PUBLIC FUNCTIONS ==========
     //| =======================================
     public QLearning(){
-        Q = new Matrix(0, 0);
-        R = new Matrix(Q.getRows(), Q.getCols());
+        Q = new QValues();
+        alpha = 0.4f;
+        beta = 8;
+        gamma = 0.9f;
     }
 
-    public void compute(int horizon){
+    public void update(State precState, State currentState, Action actionDone, float rew){
+        Q.putValue(precState, actionDone, alpha * (rew + gamma * Q.getMaxRewardFrom(currentState) - Q.getValuetAt(precState, actionDone)));
+    }
 
-        // Initialization
-        // --------------
-        gamma = 0;
-        // TODO ~ Set environment rewards
-        Q.fill(0);
+    public Action nextAction(State currentState){
+        HashMap<Action, Float> actionsProbability = new HashMap<Action, Float>(Action.values().length);
 
-        int state = randomState();
-        int nextState;
-        int action;
-
-        // Computation
-        // --------------
-        for (int i=0; i < horizon; i++){
-            do{
-                action = randomActionFrom(state);
-                nextState = getNextState(state, action);
-                Q.setValueAt(R.getValuetAt(state, action) + gamma * Q.getMaxFromRow(nextState), state, action);
-                state = nextState;
-            }while(!goalReached());
+        // Compute sum
+        float sum = 0;
+        for (Map.Entry<Action, Float> entry : Q.getRow(currentState).entrySet()) {
+            sum += Math.exp(beta * entry.getValue());
         }
 
-    }
 
-    public Queue<Integer> getBestActionsFromTo(int initialState, int goalState){
-        Queue<Integer> fifo = new LinkedList<Integer>();
-
-        int state = initialState;
-        int action;
-
-        while (state != goalState){
-            action = Q.getMaxIndexFromRow(state);
-            fifo.add (action);
-            state = getNextState(state, action);
+        // Compute probability
+        float lastProba = 0;
+        for (Map.Entry<Action, Float> entry : Q.getRow(currentState).entrySet()) {
+            float proba = ((float) Math.exp(beta * entry.getValue()) + lastProba) / sum;
+            lastProba = proba;
+            actionsProbability.put(entry.getKey(), proba);
         }
 
-        return  fifo;
+        // Get action using proportional probability
+        float proba = Utility.generateRandomFloat();
+        for (Map.Entry<Action, Float> entry : actionsProbability.entrySet())
+        {
+            if (proba - entry.getValue() <= 0)
+                return entry.getKey();
+        }
+        assert false; // Should never reach this point;
+        return null;
     }
-
-
 
     //| =======================================
     //| ========== GETTERS & SETTERS ==========
     //| =======================================
-    public Matrix getQ(){ return Q; }
-    public Matrix getR(){ return R; }
+    public QValues getQ(){ return Q; }
 
 
     //| ========================================
@@ -76,20 +73,6 @@ public class QLearning {
     //| ========================================
     private boolean goalReached(){
         // TODO
-        throw new UnsupportedOperationException("To implement");
-    }
-
-    private int getNextState(int state, int action){
-        // TODO
-        throw new UnsupportedOperationException("To implement");
-    }
-
-    private int randomState(){
-        return Utility.randomIntegerInRange(Q.getRows());
-    }
-
-    private int randomActionFrom(int state){
-        // TODO ~ Return possible action based on state-transition graph
         throw new UnsupportedOperationException("To implement");
     }
 }

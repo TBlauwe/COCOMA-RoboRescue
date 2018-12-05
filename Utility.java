@@ -1,4 +1,4 @@
-package COCOMA_RoboRescue
+package COCOMA_RoboRescue;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.LinkedList;
@@ -28,5 +28,19 @@ final public class Utility {
 
     public static int randomIntegerInRange(){
         return randomIntegerInRange(0, 100, false);
+    }
+
+    //| ~~~~~~~~~~ INTEGER ~~~~~~~~~~
+    public static float generateRandomFloat() {
+        return ThreadLocalRandom.current().nextFloat();
+    }
+
+    public static float generateRandomFloat(float min, float max) {
+        if (min >= max)
+            throw new IllegalArgumentException("max must be greater than min");
+        float result = ThreadLocalRandom.current().nextFloat() * (max - min) + min;
+        if (result >= max) // correct for rounding
+            result = Float.intBitsToFloat(Float.floatToIntBits(max) - 1);
+        return result;
     }
 }
