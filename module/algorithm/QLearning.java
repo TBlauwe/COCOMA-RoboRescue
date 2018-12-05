@@ -18,6 +18,8 @@ public class QLearning {
     private float beta;
     private float gamma;
 
+    private State precState;
+
 
     //| =======================================
     //| ==========  PUBLIC FUNCTIONS ==========
@@ -29,7 +31,14 @@ public class QLearning {
         gamma = 0.9f;
     }
 
-    public void update(State precState, State currentState, Action actionDone, float rew){
+    // Must be cll
+    public void initialize(State state){
+        precState = state;
+    }
+
+    public void update(State currentState, Action actionDone, float rew){
+        if(precState==null)
+            throw new UnknownError("initialize() must be called, in order to set precState");
         Q.putValue(precState, actionDone, alpha * (rew + gamma * Q.getMaxRewardFrom(currentState) - Q.getValuetAt(precState, actionDone)));
     }
 
