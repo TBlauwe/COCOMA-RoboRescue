@@ -1,6 +1,6 @@
 # COCOMA-RoboRescue
 
-##Overview
+## Overview
 In this project, we are testing reinforcement learning, QLearning in fact, in the RoboCupRescue Simulation.
 
 
@@ -13,7 +13,7 @@ We will concentrate on clearing the blockades in the environment. So only three 
 * The traffic simulator
 
 
-##What is implemented
+## What is implemented
 We implemented PoliceForce agents, members of the QLPD (QLearning Police Departement). These agents use a decentralized QLearning to choose between two simple actions : 
 * Clear a blockade
 * Make a random move
