@@ -1,9 +1,8 @@
-package COCOMA_RoboRescue.module.algorithm;
+package qlpd.qLearning;
 
 import java.util.*;
 
-import COCOMA_RoboRescue.module.algorithm.State;
-import COCOMA_RoboRescue.module.algorithm.Action;
+
 
 
 public class QValues {
@@ -41,6 +40,20 @@ public class QValues {
         return getMaxEntryFrom(state).getKey();
     }
 
+    public boolean addEntry(State state)
+    {
+        if(this.values.containsKey(state))
+        {
+            return false;
+        }
+        HashMap<Action, Float> qValues = new HashMap<>();
+        for(Action action : Action.values())
+        {
+            qValues.put(action, 0f);
+        }
+        this.values.put(state, qValues);
+        return false;
+    }
 
     //| =======================================
     //| ========== GETTERS & SETTERS ==========
@@ -48,13 +61,10 @@ public class QValues {
 
     // Add or set
     public void putValue(State state, Action action, float value){
-        if (values.containsKey(state)){
-            setValueAt(state, action, value);
-        }else{
-            HashMap<Action, Float> entry = new HashMap<Action, Float>(Action.values().length);
-            entry.put(action, value);
-            values.put(state, entry);
+        if (!values.containsKey(state)){
+            this.addEntry(state);
         }
+        setValueAt(state, action, value);
     }
 
     public float getValuetAt(State state, Action action){
@@ -68,7 +78,6 @@ public class QValues {
             throw new IllegalArgumentException("QValues does not have state or action");
         HashMap<Action, Float> entry = values.get(state);
         entry.put(action, value);
-        values.put(state, entry);
     }
 
     public HashMap<Action, Float> getRow(State state){
